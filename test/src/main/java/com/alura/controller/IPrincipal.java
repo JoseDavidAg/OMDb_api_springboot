@@ -1,8 +1,9 @@
 package com.alura.controller;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -58,16 +59,38 @@ public class IPrincipal {
             .flatMap(t -> t.episodios().stream())
             .toList();
 
-        //top 5 episodios
-        System.out.println("Top 5 episodios de la serie:");
-        episodios.stream().filter(m -> !m.evaluacion().equalsIgnoreCase("N/A")).sorted(Comparator.comparing(DataEpisodio::evaluacion).reversed()).limit(5).forEach(System.out::println);
+        // //top 5 episodios
+        // System.out.println("Top 5 episodios de la serie:");
+        // episodios.stream().filter(m -> !m.evaluacion().equalsIgnoreCase("N/A")).sorted(Comparator.comparing(DataEpisodio::evaluacion).reversed()).limit(5).forEach(System.out::println);
 
-        //Convertir los datos de tipo Episodio
+        // //Convertir los datos de tipo Episodio
         List<Episodio> episodiosM =  temporadas.stream()   
             .flatMap(t -> t.episodios().stream()
                 .map(d -> new Episodio(t.numTemporada(), d))).collect(Collectors.toList());
             
-        episodiosM.forEach(System.out::println);
+        // episodiosM.forEach(System.out::println);
+
+
+        // //filtrar episodios a partir de x año
+        // DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        // System.out.println("Ingrese el año a partir del cual desea filtrar:");
+        // int fecha = sc.nextInt();
+        // LocalDate fechaI = LocalDate.of(fecha, 1,1);
+        // episodiosM.stream().filter(t -> t.getFechaLanzamiento()!= null && t.getFechaLanzamiento().isAfter(fechaI))
+        //     .forEach(m -> System.out.println("Temporada "+m.getTemporada()+" Episodio "+m.getNumEpisodio()+" Fecha de lamzamiento "+m.getFechaLanzamiento().format(dtf)));
+
+        //Imprimir las temporadas por evaluacion
+        Map<Integer, Double> evaluacionPorTemporada = episodiosM.stream()
+            .filter(e -> e.getEvaluacion()> 0.0).collect(Collectors.groupingBy(Episodio::getTemporada, Collectors.averagingDouble(Episodio::getEvaluacion)));
+        
+        System.out.println(evaluacionPorTemporada);
+        
+        //Obtener datos estadisticos de todos los episodios
+        DoubleSummaryStatistics est = episodiosM.stream()
+            .filter(e-> e.getEvaluacion()>0.0)
+            .collect(Collectors.summarizingDouble(Episodio::getEvaluacion));
+        System.out.println(est);
         
     }
 

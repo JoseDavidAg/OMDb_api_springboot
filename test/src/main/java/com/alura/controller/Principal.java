@@ -14,7 +14,7 @@ public class Principal implements CommandLineRunner{
     @Override //metodo que se ejecutara una única vez al iniciar el programa
     public void run(String... args) throws Exception { 
         IPrincipal principal = new IPrincipal();
-        principal.mostrarMenu();
+        principal.muestraElMenu();;
     
         
        

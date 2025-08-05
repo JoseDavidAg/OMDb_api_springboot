@@ -1,17 +1,39 @@
 package com.alura.model;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
+import com.alura.services.ConsultaGemini;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+
+@Entity
+@Table(name="series")
 
 public class  Serie {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long Id;
+        @Column(unique=true)
         private String titulo; 
         private int totalTemporadas; 
         private double evaluacion; 
+        @Enumerated(EnumType.STRING)
         private Categoria genero;
         private String autores;
         private String sinopsis;
         private String poster;
+        @Transient
+        private List<Episodio> episodios;
 
 
     public Serie(DatosSeries datos) {
@@ -20,7 +42,7 @@ public class  Serie {
         this.evaluacion = OptionalDouble.of(Double.parseDouble(datos.evaluacion())).orElse(0.0);    //usar OptionalDouble para evitar valores null
         this.genero = Categoria.fromString(datos.genero().split(",")[0].trim());                    //obtener el primer genero, y asegurarse que no este vacio
         this.autores = datos.autores();
-        this.sinopsis = datos.sinopsis();
+        this.sinopsis = ConsultaGemini.obtenerTraduccion( datos.sinopsis());
         this.poster = datos.poster();
     }
 
@@ -82,6 +104,15 @@ public class  Serie {
         this.poster = poster;
     }
 
+
+    public List<Episodio> getEpisodios() {
+        return this.episodios;
+    }
+
+    public void setEpisodios(List<Episodio> episodios) {
+        this.episodios = episodios;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -93,6 +124,14 @@ public class  Serie {
             ", sinopsis='" + getSinopsis() + "'" +
             ", poster='" + getPoster() + "'" +
             "}";
+    }
+
+    public void setId(Long Id) {
+        this.Id = Id;
+    }
+
+    public Long getId(){
+        return Id;
     }
     
 }

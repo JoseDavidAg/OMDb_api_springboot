@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.alura.model.DataTemporadas;
 import com.alura.model.DatosSeries;
 import com.alura.model.Serie;
+import com.alura.repository.SerieRepository;
 import com.alura.services.ConsumoAPI;
 import com.alura.services.ConvierteDatos;
 
@@ -20,6 +21,10 @@ public class IPrincipal {
     private final ConvierteDatos conversor = new ConvierteDatos();
     private List<DatosSeries> datosSeries = new ArrayList<>();
     private List<Serie> datosSerieObjeto = new ArrayList<>();
+    private SerieRepository repositorioSerie;
+    public IPrincipal(SerieRepository serie) {
+        repositorioSerie = serie;
+    }
 
     public void muestraElMenu() {
         int opcion = -1;

@@ -6,18 +6,21 @@ import java.util.OptionalDouble;
 
 import com.alura.services.ConsultaGemini;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 @Entity
 @Table(name="series")
+
 
 public class  Serie {
         @Id
@@ -32,10 +35,13 @@ public class  Serie {
         private String autores;
         private String sinopsis;
         private String poster;
-        @Transient
+        @OneToMany(mappedBy = "serie", cascade= CascadeType.ALL, fetch = FetchType.EAGER)
         private List<Episodio> episodios;
 
 
+    public Serie(){
+
+    }
     public Serie(DatosSeries datos) {
         this.titulo = datos.titulo();
         this.totalTemporadas =Optional.ofNullable(  datos.totalTemporadas()).orElse(0);
@@ -110,6 +116,7 @@ public class  Serie {
     }
 
     public void setEpisodios(List<Episodio> episodios) {
+        episodios.forEach(t->t.setSerie(this));
         this.episodios = episodios;
     }
 
@@ -123,6 +130,7 @@ public class  Serie {
             ", autores='" + getAutores() + "'" +
             ", sinopsis='" + getSinopsis() + "'" +
             ", poster='" + getPoster() + "'" +
+            ", episodios='" + episodios + "'"+
             "}";
     }
 

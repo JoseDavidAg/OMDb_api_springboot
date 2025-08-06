@@ -2,12 +2,30 @@ package com.alura.model;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "episodios")
 public class Episodio {
+    @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    private Long id;
     private Integer temporada;
     private String titulo;
     private Integer numEpisodio;
     private Double evaluacion;
     private LocalDate fechaLanzamiento;
+        // Relación ManyToOne: muchos episodios pertenecen a una serie
+    @ManyToOne
+    private Serie serie;
+    public Episodio(){
+        
+    }
 
 
     public Episodio(Integer temporada, DataEpisodio e){
@@ -79,7 +97,20 @@ public class Episodio {
             "}";
     }
 
+    public Serie getSerie() {
+        return this.serie;
+    }
 
+    public void setSerie(Serie serie) {
+        this.serie = serie;
+    }
 
-    
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }

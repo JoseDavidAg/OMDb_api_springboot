@@ -36,7 +36,8 @@ public class IPrincipal {
                     1 - Buscar series 
                     2 - Buscar episodios
                     3 - Mostrar series buscadas
-                    4 - Buscar serie por nombre              
+                    4 - Buscar serie por nombre   
+                    5 - Top 5 de series           
                     0 - Salir
                     """;
             System.out.println(menu);
@@ -55,6 +56,8 @@ public class IPrincipal {
                     break;
                 case 4: 
                     buscarSeriePorNombre();
+                case 5:
+                    buscarTopSeries();
                 case 0:
                     System.out.println("Cerrando la aplicación...");
                     break;
@@ -102,12 +105,7 @@ public class IPrincipal {
             serieEncontrada.setEpisodios(episodios);
             repositorio.save(serieEncontrada);
         }
-
-
-
     }
-
-
 
     private void mostrarSeriesBuscadas() {
         series = repositorio.findAll();
@@ -134,7 +132,10 @@ public class IPrincipal {
         }else{
             System.out.println("Serie no encontrada!");
         }
+    }
 
-
+    private void buscarTopSeries(){
+        List<Serie> topSeries = repositorio.findTop5ByOrderByEvaluacionDesc();
+        topSeries.forEach(s-> System.out.println("Serie "+s.getTitulo() +" Evaluación "+s.getEvaluacion()));
     }
 }

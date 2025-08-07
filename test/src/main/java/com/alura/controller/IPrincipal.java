@@ -25,6 +25,7 @@ public class IPrincipal {
     private List<DatosSeries> datosSeries = new ArrayList<>();
     private SerieRepository repositorio;
     private List<Serie> series;
+    private Optional<Serie> serieBuscar;
 
     public IPrincipal(SerieRepository repository) {
         this.repositorio = repository;
@@ -41,6 +42,8 @@ public class IPrincipal {
                     5 - Top 5 de series    
                     6 - Buscar por categorias   
                     7 - Filtrar por Evaluación y No. de series
+                    8 - Buscar episodios por nombre
+                    9 - Buscar top episodios por serie
                     0 - Salir
                     """;
             System.out.println(menu);
@@ -68,6 +71,12 @@ public class IPrincipal {
                     break;
                 case 7:
                     buscarSeriesTemporadas();
+                    break;
+                case 8:
+                    buscarEpisodiosPorNombre();
+                    break;
+                case 9:
+                    topEpisodiosPorSerie();
                     break;
                 case 0:
                     System.out.println("Cerrando la aplicación...");
@@ -137,7 +146,7 @@ public class IPrincipal {
     private void buscarSeriePorNombre(){
         System.out.println("Escriba el nombre de la serie que desea buscar: ");
         String nombreSerie = teclado.nextLine().toUpperCase();
-        Optional<Serie> serieBuscar = repositorio.findByTituloContainsIgnoreCase(nombreSerie);
+        serieBuscar = repositorio.findByTituloContainsIgnoreCase(nombreSerie);
         if(serieBuscar.isPresent()){
             System.out.println("La serie encontrada es :"+serieBuscar.get());
         }else{
@@ -169,8 +178,29 @@ public class IPrincipal {
 
         List<Serie> resultado = repositorio.buscarTemporadasValoracion(numTe, calificacion);
         resultado.forEach(m-> System.out.println("Nombre: "+m.getTitulo()+" Calificación : "+m.getEvaluacion()+" No.Temporadas: "+m.getTotalTemporadas()));
+    }
+
+    private void buscarEpisodiosPorNombre(){
+        System.out.println("Ingrese el nombre del episodio a buscar: ");
+        String episodios = teclado.nextLine();
+
+        List<Episodio> episodiosEn = repositorio.buscarEpisodioNombre(episodios);
+        episodiosEn.forEach(m-> System.out.printf("Serie: %s Temporada: %s Episodio: %s Evaluacion %s Nombre: %s \n", m.getSerie().getTitulo(),m.getTemporada(),m.getNumEpisodio(), m.getEvaluacion(), m.getTitulo()));
 
 
     }
 
+    private void topEpisodiosPorSerie(){
+        buscarSeriePorNombre();
+        if(serieBuscar.isPresent()){
+            Serie serie = serieBuscar.get();
+            List<Episodio> episodios = repositorio.topEpisodios(serie);
+            episodios.forEach(e ->
+                    System.out.printf("Serie: %s - Temporada %s - Episodio %s - Evaluación %s\n",
+                            e.getSerie().getTitulo(), e.getTemporada(), e.getTitulo(), e.getEvaluacion()));
+        }
+
+
+
+    }
 }

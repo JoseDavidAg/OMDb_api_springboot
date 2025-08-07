@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import com.alura.model.Categoria;
 import com.alura.model.DataTemporadas;
 import com.alura.model.DatosSeries;
 import com.alura.model.Episodio;
@@ -37,7 +38,9 @@ public class IPrincipal {
                     2 - Buscar episodios
                     3 - Mostrar series buscadas
                     4 - Buscar serie por nombre   
-                    5 - Top 5 de series           
+                    5 - Top 5 de series    
+                    6 - Buscar por categorias   
+                    7 - Filtrar por Evaluación y No. de series
                     0 - Salir
                     """;
             System.out.println(menu);
@@ -56,8 +59,16 @@ public class IPrincipal {
                     break;
                 case 4: 
                     buscarSeriePorNombre();
+                    break;
                 case 5:
                     buscarTopSeries();
+                    break;
+                case 6: 
+                    buscarSerieCategoria();
+                    break;
+                case 7:
+                    buscarSeriesTemporadas();
+                    break;
                 case 0:
                     System.out.println("Cerrando la aplicación...");
                     break;
@@ -138,4 +149,28 @@ public class IPrincipal {
         List<Serie> topSeries = repositorio.findTop5ByOrderByEvaluacionDesc();
         topSeries.forEach(s-> System.out.println("Serie "+s.getTitulo() +" Evaluación "+s.getEvaluacion()));
     }
+
+    private void buscarSerieCategoria(){
+        System.out.println("Escribe el genero/categoria de la seria a buscar: ");
+        var genero = teclado.nextLine();
+        Categoria categoria = Categoria.fromCategoriaEspanol(genero);
+        List<Serie> serieGenero = repositorio.findByGenero(categoria);
+
+        System.out.println("Las series de la categoria "+genero);
+        serieGenero.forEach(m-> System.out.println("Nombre: "+m.getTitulo()+" Genero: "+m.getGenero()));
+    }
+
+  
+    private void buscarSeriesTemporadas(){
+        System.out.println("Ingresa la calificación mínima para una serie: ");
+            int calificacion = teclado.nextInt();
+        System.out.println("Ingresa el máximo de temporadas de la serie: ");
+            int numTe = teclado.nextInt();
+
+        List<Serie> resultado = repositorio.buscarTemporadasValoracion(numTe, calificacion);
+        resultado.forEach(m-> System.out.println("Nombre: "+m.getTitulo()+" Calificación : "+m.getEvaluacion()+" No.Temporadas: "+m.getTotalTemporadas()));
+
+
+    }
+
 }

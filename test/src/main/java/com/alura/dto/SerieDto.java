@@ -4,6 +4,7 @@ import com.alura.model.Categoria;
 //clase para modelar el objeto que vamos a devolver en nuestro servidor
 
 public record SerieDto(
+         Long id, 
          String titulo, 
          int totalTemporadas, 
          double evaluacion,
